@@ -1,6 +1,8 @@
 #TN Demos from Presentation
 
 Import TN-demos-repo.zip to your jaspersoft repository - it will create a set of folders under Public - > Samples -> TIBCO NOW. Please do this on a sandbox system!
+<br>
+**Note:Feel free to ask me for help in the issues section of this repo but know that these samples are in no way shape or form officially supported by tibco.**
 
 ##Bursting Sample
 
