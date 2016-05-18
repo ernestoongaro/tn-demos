@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Acme Foods</title>
+    <script src=
+    "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+    </script>
+    <link href=
+    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+    rel="stylesheet">
+    <link href=
+    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"
+    rel="stylesheet">
+    <script src=
+    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
+    </script><!-- Custom styles for this template -->
+    <link href="sticky-footer-navbar.css" rel="stylesheet">
+    <style>
+            #dashboard-container {
+            height: 650px !important;
+            display:none;
+            
+            }
+    </style>
+</head><!-- Fixed navbar -->
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button aria-controls="navbar" aria-expanded="false" class=
+                "navbar-toggle collapsed" data-target="#navbar" data-toggle=
+                "collapse" type="button"><span class="sr-only">Toggle
+                navigation</span> <span class="icon-bar"></span> <span class=
+                "icon-bar"></span> <span class="icon-bar"></span></button>
+                <a class="navbar-brand" href="#">Inventory<br>
+                Manager</a> <a class="navbar-brand" href="#"><img alt=""
+                height="50" src="img/acme-foods-logo.png" width="100"></a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="index.html">Actionable Data<br>
+                        <i>visualize.js</i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav><!-- Begin page content -->
+    <div class="container">
+        <div class="page-header"></div>
+        <script>
+        $(document).ready(function(){
+                $(".btn1").click(function(){
+                $("#dashboard-container").slideUp(1000);
+                });
+                $(".btn2").click(function(){
+                $("#dashboard-container").slideDown(1000);
+                //$("#dashboard-container").width(auto);
+                renderdahsboard();
+				
+            });
+            });
+        </script>
+        <ul>
+            <li class="active">
+                <a href="#">Warehouse: Location Mexico</a>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href=
+                "#">Warehouse Actions <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#">Re-supply</a>
+                    </li>
+                    <li>
+                        <a href="#">Recall Shipment</a>
+                    </li>
+                    <li>
+                        <a href="#">Track Order</a>
+                    </li>
+                </ul>
+            </li>
+        </ul><br>
+        <div class="panel panel-default">
+            <div class="alert alert-danger" id="alert" role="alert">
+                Warning, Inventory is Low in Mexico <button class=
+                "btn2 btn btn-default">Show Data</button> <button class=
+                "btn1 btn btn-default">Hide Data</button>
+            </div>
+        </div>
+        <div class="progress" id="warning-div">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="20"
+            class="progress-bar progress-bar-danger" role="progressbar" style=
+            "width:20%">
+                20% stocked
+            </div>
+        </div>
+        <div class="progress" id="restocking-div" style="display: none;">
+            <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100"
+            class="progress-bar progress-bar-striped active" id="restocking"
+            role="progressbar" style="width:100%">
+                Standby: now restocking warehouses in:
+            </div>
+        </div>
+        <script src=
+        "http://localhost:8080/jasperserver-pro/client/visualize.js" type=
+        'text/javascript'>
+        </script>
+        <div id="dashboard-container"></div>
+        <script>
+        var vis;
+        var dashboard;
+        
+        function handleError(e) {
+            alert(e);
+        }
+
+        visualize({
+            auth: {
+                name: "jasperadmin",
+                password: "jasperadmin"
+            }
+        }, function(v) {
+	            vis = v;
+	            prepdashboard();
+
+        });
+
+        function prepdashboard() {
+            dashboard = vis.dashboard({
+                resource: "/public/Samples/TIBCO_NOW/Visualize_js_Demo/3.2_Inventory_Metrics",
+                runImmediately: false,
+        params: {
+        Country: ["Mexico"]
+        },
+        linkOptions : {
+                events: {
+                click: function(ev, link) {
+                $('#warning-div').hide();
+                $('#restocking-div').show();
+                $('#restocking').append(link.parameters["inventory_fact_ALL.inv_store.inv_store__region.inv_store__region__sales_district"] + ", ");
+                $('#alert').attr('class', 'alert alert-success');
+                console.log(link);
+                    }
+                } 
+            },
+                container: "#dashboard-container",
+                error: handleError
+            });        
+        }
+        
+        function renderdahsboard() {
+        dashboard
+    .run()
+    .done(function() { 
+        this
+            .container("#dashboard-container")
+            .render()
+            .done(function() { console.log("dashboard rendered"); })
+            .fail(function(e) { alert(e); });
+    })
+    .fail(handleError);
+        }
+        </script>
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted">Acme Foods is not a real company this is
+                just a demo for TIBCO Jaspersoft.</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
